@@ -24,6 +24,40 @@ A execução do projeto com as variáveis de ambiente definidas no arquivo .env 
 ```
 npm run dev (ou equivalente: node -r dotenv/config ./src/server.js)
 ```
+### **Em UserController.js, foi subistituído os métodos async / away por Promises.**
+
+### Exemplo com async / await:
+
+```js
+const user = await User.deleteOne({ _id: req.params.id }, (error) => {
+    if(error) return res.status(400).json({
+        error: true,
+        code: 106,
+        message: "Erro: Usuário não foi apagado com sucesso!"
+    });
+});
+    
+return res.status(200).json({
+    error: false,
+    message: "Usuário apagado com sucesso!"
+});
+```
+
+### Exemplo com Promises:
+```js
+User.deleteOne({ _id: req.params.id }).then(() => {
+    return res.status(200).json({
+        error: false,
+        message: "Usuário apagado com sucesso!"
+    });
+}).catch((err) => {
+    return res.status(400).json({
+        error: true,
+        code: 140,
+        message: "Error: Usuário não foi apagado com sucesso!"
+    });
+});
+```
 
 ### **Dependência utilizadas:**
 
