@@ -14,16 +14,6 @@ npm install -g nodemon
 npm install --save mongoose-paginate-v2
 ```
 
-### **Instalar o módulo para criptografar a senha**
-```
-npm install --save bcryptjs
-```
-
-### **Instalar a dependência para o JWT**
-```
-npm install --save jsonwebtoken
-```
-
 ### **Crie um arquivo .env na raiz do projeto e coloque os seguintes dados (não funciona no REPLIT):**
 ```
 #Banco de dados
