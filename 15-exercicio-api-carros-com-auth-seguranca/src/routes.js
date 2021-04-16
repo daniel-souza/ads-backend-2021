@@ -1,7 +1,6 @@
 //const { Router } = require("express");
 import { Router } from "express";
 
-import ProductController from "./controllers/ProductController.js";
 import authMiddleware from "./middlewares/auth.js";
 import UserController from "./controllers/UserController.js";
 import LoginController from "./controllers/LoginController.js";
