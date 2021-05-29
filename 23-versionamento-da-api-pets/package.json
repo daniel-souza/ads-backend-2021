@@ -1,0 +1,20 @@
+{
+  "name": "21-api-pets-rotas-aninhadas-com-mongoose-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node -r dotenv/config ./src/server.js",
+    "testeModelo": "node -r dotenv/config ./src/models/Usuario.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.2"
+  }
+}
