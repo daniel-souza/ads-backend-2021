@@ -45,7 +45,7 @@ app.get("/pets", async function listar(req, res) {
 });
 // GET /pets/:pid - Listar um pet.
 app.get("/pets/:pid", async function listarUmPet(req, res) {
-    return res.json({ Pet: Pets[req.params.id] });
+    return res.json({ Pet: Pets[req.params.pid] });
 });
 // POST /pets - Criar novo Pet.
 app.post("/pets", async function cadastrarPet(req, res) {
