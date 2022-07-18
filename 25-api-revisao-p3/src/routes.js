@@ -1,10 +1,8 @@
 //const { Router } = require("express");
 import { Router } from "express";
-import bcrypt from 'bcrypt';
 
 import SignController from "./controllers/SignController.js";
 import authorize from "./middlewares/AuthMiddleware.js";
-import UserModel from "./models/UserModel.js";
 import ProfileController from "./controllers/ProfileController.js";
 import UserController from "./controllers/UserController.js";
 const routes = new Router();
@@ -24,33 +22,34 @@ routes.get('/profile', authorize(), ProfileController.list);
 /* editar usuário logado */
 routes.put('/profile', authorize(), ProfileController.update);
 /* deletar usuário logado */
-routes.get('/profile', authorize(), ProfileController.delete);
+routes.delete('/profile', authorize(), ProfileController.delete);
 // produtos do usuário logado
-routes.get('/profile/produtos', authorize(), ProfileController.listProducts);
-routes.get('/profile/produtos/:product_id', authorize(), ProfileController.listOneProduct);
-routes.post('/profile/produtos', authorize(), ProfileController.addProduct);
-routes.put('/profile/produtos/:product_id', authorize(), ProfileController.updateProduct);
-routes.delete('/profile/produtos/:product_id', authorize(), ProfileController.deleteProduct);
+routes.get('/profile/products', authorize(), ProfileController.listProducts);
+routes.get('/profile/products/:product_id', authorize(), ProfileController.listOneProduct);
+routes.post('/profile/products', authorize(), ProfileController.addProduct);
+routes.put('/profile/products/:product_id', authorize(), ProfileController.updateProduct);
+routes.delete('/profile/products/:product_id', authorize(), ProfileController.deleteProduct);
 // comentários de produtos do usuário logado
-routes.get('/profile/produtos/:product_id/comentarios', authorize(), ProfileController.listProductComments);
-routes.get('/profile/produtos/:product_id/comentarios/:comment_id', authorize(), ProfileController.listOneProductComment);
-routes.post('/profile/produtos/:product_id/comentarios', authorize(), ProfileController.addProductComment);
-routes.put('/profile/produtos/:product_id/comentarios/:comment_id', authorize(), ProfileController.updateProductComment);
-routes.delete('/profile/produtos/:product_id/comentarios/:comment_id', authorize(), ProfileController.deleteProductComment);
+routes.get('/profile/products/:product_id/comments', authorize(), ProfileController.listProductComments);
+routes.get('/profile/products/:product_id/comments/:comment_id', authorize(), ProfileController.listOneProductComment);
+routes.post('/profile/products/:product_id/comments', authorize(), ProfileController.addProductComment);
+routes.put('/profile/products/:product_id/comments/:comment_id', authorize(), ProfileController.updateProductComment);
+routes.delete('/profile/products/:product_id/comments/:comment_id', authorize(), ProfileController.deleteProductComment);
 
 // rotas públicas
-routes.get('/usuarios', UserController.list)
-routes.get('/usuarios/:user_id', UserController.listOne)
-routes.get('/usuarios/:user_id/produtos', UserController.listProducts)
-routes.get('/usuarios/:user_id/produtos/:product_id', UserController.listOneProduct)
-routes.get('/usuarios/:user_id/produtos/:product_id/comentarios', UserController.listProductComments)
-routes.get('/usuarios/:user_id/produtos/:product_id/comentarios/:comment_id', UserController.listOneProductComment)
+routes.get('/users', UserController.list);
+routes.get('/users/:user_id', UserController.listOne);
+routes.get('/users/:user_id/products', UserController.listProducts);
+routes.get('/users/:user_id/products/:product_id', UserController.listOneProduct);
+routes.get('/users/:user_id/products/:product_id/comments', UserController.listProductComments);
+routes.get('/users/:user_id/products/:product_id/comments/:comment_id', UserController.listOneProductComment);
 
-// rotas privadas
-routes.post('/usuarios/:user_id/produtos/:product_id/comentarios', authorize(), UserController.addProductComment);
-routes.put('/usuarios/:user_id/produtos/:product_id/comentarios/:comment_id', authorize(), UserController.updateProductComment);
-routes.delete('/usuarios/:user_id/produtos/:product_id/comentarios/:comment_id', authorize(), UserController.deleteProductComment);
+// rotas privadas - Usuário autenticado pode inserir, editar e deletar seus próprios comentários em produtos de outros usuários, além de si mesmo.
+routes.post('/users/:user_id/products/:product_id/comments', authorize(), UserController.addProductComment);
+routes.put('/users/:user_id/products/:product_id/comments/:comment_id', authorize(), UserController.updateProductComment);
+routes.delete('/users/:user_id/products/:product_id/comments/:comment_id', authorize(), UserController.deleteProductComment);
 
+// exception
 routes.use((err, req, res, next) => {
     console.log(err)
     return res.sendStatus(500);

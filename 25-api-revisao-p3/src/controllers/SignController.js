@@ -1,12 +1,13 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import authConfig from '../configs/authConfig.js';
 
 import UserModel from "../models/UserModel.js";
 
 class SignController {
 
     // cadastrar usuário
-    async signUp(req, res) {
+    static async signUp(req, res) {
         try {
             const userExiste = await UserModel.findOne({ email: req.body.email });
             //verficar se email já está cadastrado
@@ -18,6 +19,7 @@ class SignController {
                 req.body.senha = bcrypt.hashSync(req.body.senha, 8);
 
             const user = await UserModel.create(req.body);
+            user.senha = undefined;
             return res.status(201).json({ user });
         } catch(err) {
             if (err.name === "ValidationError") {
@@ -36,10 +38,10 @@ class SignController {
     }
 
     // login do usuário {email e senha}
-    async signIn(req, res) {
+    static async signIn(req, res) {
         try {
             //verficar se email está ou não cadastrado
-            const userExiste = await UserModel.findOne({ email: req.body.email });
+            const userExiste = await UserModel.findOne({ email: req.body.email }).select("+senha");
             if (!userExiste)
                 return res.status(400).json({error: true, message: "Usuário ou senha incorretos!"})
     
@@ -59,8 +61,8 @@ class SignController {
                 },
                 token: jwt.sign(
                     { id: userExiste._id }, // payload
-                    process.env.API_SECRET, // secret
-                    { expiresIn: process.env.JWT_EXPIRES_IN }  // options
+                    authConfig.API_SECRET, // secret
+                    { expiresIn: authConfig.JWT_EXPIRES_IN }  // options
                 )
     
             })
@@ -74,4 +76,4 @@ class SignController {
     }
 }
 
-export default new SignController();
+export default SignController;

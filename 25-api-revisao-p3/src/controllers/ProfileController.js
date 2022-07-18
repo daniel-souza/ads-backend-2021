@@ -2,13 +2,13 @@ import bcrypt from 'bcrypt';
 import UserModel from "../models/UserModel.js";
 
 class ProfileController {
-    async list(req, res) {
+    static async list(req, res) {
         UserModel.findById(req.userID)
             .then(user => res.json({ user }))
             .catch(() => res.status(404).json({error: true, message: "Usuário não encontrado!"}))
     }
 
-    async update(req, res) {
+    static async update(req, res) {
         try { 
             //verficar se o email a ser atualizado já está ou não cadastrado
             if (req.body.email) {
@@ -17,8 +17,8 @@ class ProfileController {
                     return res.status(400).json({error: true, message: "Email já cadastrado!"})
             }
     
-            if (req.body.senha)
-                req.body.senha = bcrypt.hashSync(req.body.senha, 8);
+            if (req.body.senha) // tamanho mínimo será ignorado pela validação, já que o hash dará outro comprimento para 'senha'
+                req.body.senha = bcrypt.hashSync(req.body.senha, 8); // solução usar hooks
     
             await UserModel.updateOne({ _id: req.userID }, req.body, { runValidators: true });
             return res.json({ error: false, message: "Usuário atualizado com sucesso!" });
@@ -38,7 +38,7 @@ class ProfileController {
         };
     }
 
-    async delete(req, res) {
+    static async delete(req, res) {
         UserModel.deleteOne({ _id: req.userID })
             .then(() => res.json({ error: false, message: 'Usuário deletado com sucesso!' }))
             .catch(() => res.status(404).json({
@@ -47,7 +47,7 @@ class ProfileController {
             }))
     }
 
-    async listProducts(req, res) {
+    static async listProducts(req, res) {
         UserModel.findById(req.userID).populate({path: "produtos.comentarios.usuario", select: 'nome'})
             .then(user => res.json({ produtos: user.produtos }))
             .catch(() => res.status(404).json({
@@ -56,7 +56,7 @@ class ProfileController {
             }))
     }
 
-    async listOneProduct(req, res) {
+    static async listOneProduct(req, res) {
         try {
             const user = await UserModel.findById(req.userID).populate({path: "produtos.comentarios.usuario", select: 'nome'});
             if (!user)
@@ -73,7 +73,7 @@ class ProfileController {
         }
     }
 
-    async addProduct(req, res) {
+    static async addProduct(req, res) {
         try {
             const user = await UserModel.findById(req.userID)
             if (!user)
@@ -84,7 +84,7 @@ class ProfileController {
 
             return res.status(400).json({error: false, message: "Produto adicionado com sucesso!"});
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             if (err.name === "ValidationError") {
                 return res.status(400).json({
                     error: true,
@@ -102,7 +102,7 @@ class ProfileController {
 
     }
 
-    async updateProduct(req, res) {
+    static async updateProduct(req, res) {
         try {
             const user = await UserModel.findById(req.userID)
             if (!user)
@@ -115,7 +115,7 @@ class ProfileController {
 
             return res.status(400).json({error: false, message: "Produto editado com sucesso!"});
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             if (err.name === "ValidationError") {
                 return res.status(400).json({
                     error: true,
@@ -133,7 +133,7 @@ class ProfileController {
 
     }
 
-    async deleteProduct(req, res) {
+    static async deleteProduct(req, res) {
         try {
             const user = await UserModel.findById(req.userID);
             if (!user)
@@ -146,7 +146,7 @@ class ProfileController {
             
             return res.status(400).json({error: false, message: "Produto deletado com sucesso!"});
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             if (err.name === "ValidationError") {
                 return res.status(400).json({
                     error: true,
@@ -164,7 +164,7 @@ class ProfileController {
 
     }
 
-    async listProductComments(req, res) {
+    static async listProductComments(req, res) {
         try {
             const user = await UserModel.findById(req.userID).populate({path: "produtos.comentarios.usuario", select: 'nome'});
             if (!user)
@@ -181,7 +181,7 @@ class ProfileController {
         }
     }
 
-    async listOneProductComment(req, res) {
+    static async listOneProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.userID).populate({path: "produtos.comentarios.usuario", select: 'nome'});
             if (!user)
@@ -200,7 +200,7 @@ class ProfileController {
         }
     }
 
-    async addProductComment(req, res) {
+    static async addProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.userID);
              if (!user)
@@ -229,7 +229,7 @@ class ProfileController {
         }
     }
 
-    async updateProductComment(req, res) {
+    static async updateProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.userID);
             if (!user)
@@ -260,7 +260,7 @@ class ProfileController {
         }
     }
 
-    async deleteProductComment(req, res) {
+    static async deleteProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.userID);
             if (!user)
@@ -284,4 +284,4 @@ class ProfileController {
 
 }
 
-export default new ProfileController();
+export default ProfileController;

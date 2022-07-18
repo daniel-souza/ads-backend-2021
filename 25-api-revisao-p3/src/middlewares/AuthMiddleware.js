@@ -1,9 +1,12 @@
 import jwt from 'jsonwebtoken'
+import authConfig from '../configs/authConfig.js'
+
+
 
 export default function authorize(arrrayOfAuthUsers = undefined) {
     return  (req, res, next) => {
-        console.log(arrrayOfAuthUsers)
-        // rerificar se o token foi informado no cabeçalho da requisição
+        //console.log(arrrayOfAuthUsers)
+        // verificar se o token foi informado no cabeçalho da requisição
         if (!req.headers.authorization) {
             return res.status(401).json({
                 error: true,
@@ -13,9 +16,9 @@ export default function authorize(arrrayOfAuthUsers = undefined) {
         const [, token] = req.headers.authorization.split(' ') // => [Bearer, {TOKEN}]
 
         try {
-           const payload = jwt.verify(token, process.env.API_SECRET);
+           const payload = jwt.verify(token, authConfig.API_SECRET);
            req.userID = payload.id;
-           console.log(req.userID)
+           //console.log(req.userID)
            // se nosso usário não possui diferentes papéis
            if(!payload.role) {
                return next();
@@ -29,9 +32,9 @@ export default function authorize(arrrayOfAuthUsers = undefined) {
                     message: 'Usuário não autorizado!'
                 })
            }
-           next();
+           return next();
         } catch(exception) {
-            console.log(exception.name)
+            //console.log(exception.name)
             if(exception.name === 'TokenExpiredError') {
                 return res.status(401).json({
                     error: true,

@@ -2,19 +2,19 @@ import UserModel from "../models/UserModel.js";
 
 class UserController {
     // rotas públicas
-    async list(req, res) {
+    static async list(req, res) {
         UserModel.find({}).select("-senha")
             .then(users => res.json({error: false, users}))
             .catch(() => res.status(404).json({error: true, message: "Not found"}))
     }
 
-    async listOne(req, res) {
+    static async listOne(req, res) {
         UserModel.findById(req.params.user_id).select("-senha")
             .then(user => res.json({error: false, user}))
             .catch(() => res.status(404).json({error: true, message: "Usuário não encontrado!"}))
     }
 
-    async listProducts(req, res) {
+    static async listProducts(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id)
             if(!user)
@@ -29,7 +29,7 @@ class UserController {
         }
     }
 
-    async listOneProduct(req, res) {
+    static async listOneProduct(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id)
             if(!user)
@@ -46,7 +46,7 @@ class UserController {
         }
     }
 
-    async listProductComments(req, res) {
+    static async listProductComments(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id).populate({path: "produtos.comentarios.usuario", select: 'nome'});
             if(!user)
@@ -63,7 +63,7 @@ class UserController {
         }
     }
 
-    async listOneProductComment(req, res) {
+    static async listOneProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id).populate({path: "produtos.comentarios.usuario", select: 'nome'});
             if(!user)
@@ -83,7 +83,7 @@ class UserController {
     }
 
     // ROTAS PRIVADAS -- Usuário autenticado só poderá adcionar, deletar e editar comentários exclusivamente seus.
-    async addProductComment(req, res) {
+    static async addProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id);
             if(!user)
@@ -112,7 +112,7 @@ class UserController {
         }     
     }
 
-    async updateProductComment(req, res) {
+    static async updateProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id);
             if(!user)
@@ -145,7 +145,7 @@ class UserController {
         }     
     }
 
-    async deleteProductComment(req, res) {
+    static async deleteProductComment(req, res) {
         try {
             const user = await UserModel.findById(req.params.user_id);
             if(!user)
@@ -172,4 +172,4 @@ class UserController {
 
 }
 
-export default new UserController();
+export default UserController;

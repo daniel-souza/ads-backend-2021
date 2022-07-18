@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const UsuarioSchema = new mongoose.Schema({
     nome: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     sexo: {
         type: String,
@@ -13,17 +14,22 @@ const UsuarioSchema = new mongoose.Schema({
     data_nasc: Date,
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     senha: {
         type: String,
         required: true,
-        minLength: 6
+        select: false,
+        minlength: 8
     },
     produtos: [{
         nome: {
             type: String,
-            required: true
+            required: true,
+            trim: true
         },
         categoria: String,
         valor: {
@@ -38,14 +44,17 @@ const UsuarioSchema = new mongoose.Schema({
             },
             conteudo: {
                 type: String,
-                required: true
+                required: true,
+                trim: true
             },
             usuario: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Usuario'
+                ref: 'Usuario' // definido na linha 60 -> o nome do modelo
             }
       }]
     }]
+}, {
+    timestamps: true // createdAt updatedAt
 })
 
 export default mongoose.model('Usuario', UsuarioSchema);

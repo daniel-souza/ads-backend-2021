@@ -3,8 +3,6 @@
 import express from "express";
 import routes from "./routes.js";
 
-process.env.DB_HOST
-
 //reqire("./database/mongodb.js");
 import "./database/Connection.js";
 
